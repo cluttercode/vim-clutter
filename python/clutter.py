@@ -12,9 +12,6 @@ outpattern = re.compile('^(.*):([0-9]+)\.([0-9]+)-([0-9]+)$')
 
 Entry = namedtuple('Entry', ['name', 'path', 'line', 'col', 'endcol', 'attrs'])
 
-def set_globopts(opts):
-    globopts = opts
-
 def _run(opts=[]):
     row, col = vim.current.window.cursor
 
