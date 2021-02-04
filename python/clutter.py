@@ -8,22 +8,32 @@ import subprocess
 
 import vim
 
+# [# test #]
+# [# test #]
+# [# test #]
+
 outpattern = re.compile('^(.*):([0-9]+)\.([0-9]+)-([0-9]+)$')
 
 Entry = namedtuple('Entry', ['name', 'path', 'line', 'col', 'endcol', 'attrs'])
 
-def _run(opts=[]):
-    row, col = vim.current.window.cursor
+Loc = namedtuple('Loc', ['path', 'row', 'col'])
 
-    fn = vim.current.buffer.name
+
+def _loc():
+    row, col = vim.current.window.cursor
+    path = vim.current.buffer.name
 
     try:
-        fn = pathlib.PurePath(vim.current.buffer.name).relative_to(os.getcwd())
+        path = str(pathlib.PurePath(path).relative_to(os.getcwd()))
     except ValueError:
         print(f'clutter: buffer must be at path relative to current directory')
         return None
 
-    cmd = ["clutter", "-i", "", "r", "--loc", f'{fn}:{row}.{col + 1}']
+    return Loc(path=path, row=row, col=col)
+
+
+def _run(loc, opts=[]):
+    cmd = ["clutter", "-i", "", "r", "--loc", f'{loc.path}:{loc.row}.{loc.col + 1}']
 
     cmd.extend(opts)
 
@@ -61,42 +71,59 @@ def _run(opts=[]):
 
         fn, lnum, col, endcol = m.groups()
 
+        lnum, col, endcol = int(lnum), int(col), int(endcol)
+
         matches.append(Entry(name=name, path=fn, line=lnum, col=col, endcol=endcol, attrs=fs[2:]))
 
     return matches
 
 
 def resolve1(which):
-    matches = _run(opts=[f'-{which}'])
+    loc = _loc()
+
+    matches = _run(loc, opts=[f'-{which}'])
 
     if len(matches) != 1:
-        _render_list(matches)
+        _render_list(matches, loc)
         return
 
     first = matches[0]
 
-    vim.command(f'keepalt edit {first.path}')
+    try:
+        vim.command(f'keepalt edit {first.path}')
+    except vim.error as e:
+        # Check for ATTENTION (maybe opening a file that is already opened).
+        if e.args and e.args[0].find(':E325:') == -1:
+            raise
+
     vim.command(f'{first.line}')
     vim.command(f'normal! {first.col}|')
     vim.command(f'normal! zz')
 
 
 def resolve_list():
-    _render_list(_run())
+    loc = _loc()
+    _render_list(_run(loc), loc)
 
 
-def _render_list(matches):
+def _render_list(matches, loc):
     if not matches:
         return
 
     vim.command('call setloclist(0, [], "f")')
     vim.command('call setloclist(0, [], "r", {"title": "clutter"})')
 
+    i = 1
     for m in matches:
         vim.command(
             'call setloclist(0, [{"filename": "%s", "lnum": %s, "col": %s, "text": "%s %s"}], "a")' % (
                 m.path, m.line, m.col, m.name, ' '.join(m.attrs),
             )
         )
+
+        if m.path == loc.path and m.line == loc.row and m.col <= loc.col <= m.endcol:
+            vim.command('call setloclist(0, [], "a", {"idx": %d})' % i)
+
+        i += 1
 
     vim.command('lopen')
