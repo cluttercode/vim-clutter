@@ -83,7 +83,7 @@ def resolve1(which):
     if not loc:
         return
 
-    matches = _run(loc, opts=[f'-{which}'])
+    matches = _run(loc, opts=[f'-{which}', '-c'])
 
     if not matches:
         return
