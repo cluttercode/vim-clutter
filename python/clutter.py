@@ -85,6 +85,9 @@ def resolve1(which):
 
     matches = _run(loc, opts=[f'-{which}'])
 
+    if not matches:
+        return
+
     if len(matches) != 1:
         _render_list(matches, loc)
         return
