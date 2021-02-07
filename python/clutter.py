@@ -80,6 +80,8 @@ def _run(loc, opts=[]):
 
 def resolve1(which):
     loc = _loc()
+    if not loc:
+        return
 
     matches = _run(loc, opts=[f'-{which}'])
 
@@ -103,6 +105,9 @@ def resolve1(which):
 
 def resolve_list():
     loc = _loc()
+    if not loc:
+        return
+
     _render_list(_run(loc), loc)
 
 
