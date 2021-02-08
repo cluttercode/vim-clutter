@@ -1,0 +1,45 @@
+*clutter-vim.doc* clutter vim bindings
+
+												_       _   _             ~
+										___| |_   _| |_| |_ ___ _ __  ~
+									 / __| | | | | __| __/ _ \ '__| ~
+									| (__| | |_| | |_| ||  __/ |    ~
+									 \___|_|\__,_|\__|\__\___|_|    ~
+																									~
+
+====================================================================
+CONTENTS											                     *ClutterContents*
+
+    1. Usage ................ |ClutterUsage|
+    2. Mappings ............. |ClutterMappings|
+    3. License .............. |ClutterLicense|
+    4. Bugs ................. |ClutterBugs|
+    5. Contributing ......... |ClutterContributing|
+
+====================================================================
+Section 1: Usage                                      *ClutterUsage*
+
+TODO
+
+====================================================================
+Section 2: Mappings                                *ClutterMappings*
+
+TODO
+
+====================================================================
+Section 3: License                                  *ClutterLicense*
+
+Clutter is licensed under Apache License 2.0.
+
+====================================================================
+Section 4: Bugs                                        *ClutterBugs*
+
+If you find a bug please post it on the issue tracker:
+https://github.com/cluttercode/vim-clutter/issues
+
+====================================================================
+Section 5: Contributing                        *ClutterContributing*
+
+Send a pull request:
+
+GitHub: https://github.com/cluttercode/vim-clutter
