@@ -32,10 +32,8 @@ def _loc():
     return Loc(path=path, row=row, col=col)
 
 
-def _run(loc, opts=[]):
-    cmd = ["clutter", "-i", "", "r", "--loc", f'{loc.path}:{loc.row}.{loc.col + 1}']
-
-    cmd.extend(opts)
+def _run(opts=[]):
+    cmd = ["clutter", "-i", ""] + opts
 
     proc = subprocess.run(cmd, capture_output=True)
 
@@ -78,12 +76,16 @@ def _run(loc, opts=[]):
     return matches
 
 
+def _resolve_opts(loc):
+    return ["r", "--loc", f'{loc.path}:{loc.row}.{loc.col + 1}']
+
+
 def resolve1(which):
     loc = _loc()
     if not loc:
         return
 
-    matches = _run(loc, opts=[f'-{which}', '-c'])
+    matches = _run(_resolve_opts(loc) + [f'-{which}', '-c'])
 
     if not matches:
         return
@@ -111,11 +113,23 @@ def resolve_list():
     if not loc:
         return
 
-    _render_list(_run(loc), loc)
+    _render_list(_run(_resolve_opts(loc)), loc)
 
 
-def _render_list(matches, loc):
+def search(mode, args):
+    cmd = ['s']
+
+    if mode:
+        cmd.append(f'-{mode}')
+
+    cmd.extend(args)
+
+    _render_list(_run(cmd))
+
+
+def _render_list(matches, loc=None):
     if not matches:
+        print('clutter: no matches')
         return
 
     vim.command('call setloclist(0, [], "f")')
@@ -129,7 +143,7 @@ def _render_list(matches, loc):
             )
         )
 
-        if m.path == loc.path and m.line == loc.row and m.col <= loc.col <= m.endcol:
+        if loc and m.path == loc.path and m.line == loc.row and m.col <= loc.col <= m.endcol:
             vim.command('call setloclist(0, [], "a", {"idx": %d})' % i)
 
         i += 1
