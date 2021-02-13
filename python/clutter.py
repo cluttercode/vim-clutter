@@ -19,6 +19,33 @@ Entry = namedtuple('Entry', ['name', 'path', 'line', 'col', 'endcol', 'attrs'])
 Loc = namedtuple('Loc', ['path', 'row', 'col'])
 
 
+def check():
+    def err(s):
+        print(f'clutter: {s}')
+        print("to reinstall or upgrade clutter, see https://github.com/cluttercode/clutter#installation.")
+
+    try:
+        proc = subprocess.run(["clutter", "version"], capture_output=True)
+    except FileNotFoundError:
+        err("clutter is not in $PATH.")
+        return
+
+    if proc.returncode != 0:
+        err("something went wrong with clutter.")
+        return
+
+    lines = proc.stdout.decode('utf-8').split(" ")
+    if not lines:
+        err("clutter gave out weird version output.")
+
+    ver = lines[0].split(".")
+    if len(ver) != 3:
+        err("clutter gave out weird version output.")
+
+    if int(ver[0]) == 0 and int(ver[1]) < 2:
+        err("incompatible clutter version - at least 0.2.0 required.")
+
+
 def _loc():
     row, col = vim.current.window.cursor
     path = vim.current.buffer.name
