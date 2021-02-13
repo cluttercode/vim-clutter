@@ -12,9 +12,10 @@ CONTENTS											                     *ClutterContents*
 
     1. Usage ................ |ClutterUsage|
     2. Mappings ............. |ClutterMappings|
-    3. License .............. |ClutterLicense|
-    4. Bugs ................. |ClutterBugs|
-    5. Contributing ......... |ClutterContributing|
+    3. Commands ............. |ClutterCommands|
+    4. License .............. |ClutterLicense|
+    5. Bugs ................. |ClutterBugs|
+    6. Contributing ......... |ClutterContributing|
 
 ====================================================================
 Section 1: Usage                                      *ClutterUsage*
@@ -26,19 +27,36 @@ Section 2: Mappings                                *ClutterMappings*
 
 TODO
 
+map <Leader>cl :ClutterResolveList<CR>
+map <Leader>cp :ClutterResolvePrev<CR>
+map <Leader>cn :ClutterResolveNext<CR>
+
 ====================================================================
-Section 3: License                                  *ClutterLicense*
+Section 3: Commands                                *ClutterCommands*
+
+TODO
+
+command! -nargs=0 ClutterResolveList call ResolveList()
+command! -nargs=0 ClutterResolveNext call ResolveNext()
+command! -nargs=0 ClutterResolvePrev call ResolvePrev()
+
+command! -nargs=* ClutterSearchExact call SearchExact(<f-args>)
+command! -nargs=* ClutterSearchGlob call SearchGlob(<f-args>)
+command! -nargs=* ClutterSearchRegexp call SearchRegexp(<f-args>)
+
+====================================================================
+Section 4: License                                  *ClutterLicense*
 
 Clutter is licensed under Apache License 2.0.
 
 ====================================================================
-Section 4: Bugs                                        *ClutterBugs*
+Section 5: Bugs                                        *ClutterBugs*
 
 If you find a bug please post it on the issue tracker:
 https://github.com/cluttercode/vim-clutter/issues
 
 ====================================================================
-Section 5: Contributing                        *ClutterContributing*
+Section 6: Contributing                        *ClutterContributing*
 
 Send a pull request:
 

@@ -25,7 +25,7 @@ def check():
         print("to reinstall or upgrade clutter, see https://github.com/cluttercode/clutter#installation.")
 
     try:
-        proc = subprocess.run(["clutter", "version"], capture_output=True)
+        proc = subprocess.run(["clutter", "version"], capture_output=True, text=True)
     except FileNotFoundError:
         err("clutter is not in $PATH.")
         return
@@ -34,7 +34,7 @@ def check():
         err("something went wrong with clutter.")
         return
 
-    lines = proc.stdout.decode('utf-8').split(" ")
+    lines = proc.stdout.split(" ")
     if not lines:
         err("clutter gave out weird version output.")
 
@@ -46,12 +46,16 @@ def check():
         err("incompatible clutter version - at least 0.2.0 required.")
 
 
+def _rel_path(path):
+    return str(pathlib.PurePath(path).relative_to(os.getcwd()))
+
+
 def _loc():
     row, col = vim.current.window.cursor
     path = vim.current.buffer.name
 
     try:
-        path = str(pathlib.PurePath(path).relative_to(os.getcwd()))
+        path = _rel_path(path)
     except ValueError:
         print(f'clutter: buffer must be at path relative to current directory')
         return None
@@ -59,12 +63,16 @@ def _loc():
     return Loc(path=path, row=row, col=col)
 
 
-def _run(opts=[]):
+def _run(opts=[], buffer_stdin=False):
     cmd = ["clutter", "-i", ""] + opts
 
-    proc = subprocess.run(cmd, capture_output=True)
+    stdin = None
+    if buffer_stdin:
+        stdin = ''.join([f'{l}\n' for l in vim.current.buffer[:]])
 
-    stderr = proc.stderr.decode('utf-8').strip()
+    proc = subprocess.run(cmd, capture_output=True, text=True, input=stdin)
+
+    stderr = proc.stderr.strip()
 
     if proc.returncode != 0:
         print(f'clutter: {stderr}')
@@ -73,7 +81,7 @@ def _run(opts=[]):
     if stderr:
         print(f'clutter: {stderr}')
 
-    stdout = proc.stdout.decode('utf-8')
+    stdout = proc.stdout
 
     r = csv.reader(StringIO(stdout), delimiter=' ')
 
@@ -104,7 +112,7 @@ def _run(opts=[]):
 
 
 def _resolve_opts(loc):
-    return ["r", "--loc", f'{loc.path}:{loc.row}.{loc.col + 1}']
+    return ["r", "--loc", f'{loc.path}:{loc.row}.{loc.col + 1}', '--loc-from-stdin']
 
 
 def resolve1(which):
@@ -112,7 +120,7 @@ def resolve1(which):
     if not loc:
         return
 
-    matches = _run(_resolve_opts(loc) + [f'-{which}', '-c'])
+    matches = _run(_resolve_opts(loc) + [f'-{which}', '-c'], True)
 
     if not matches:
         return
@@ -123,12 +131,13 @@ def resolve1(which):
 
     first = matches[0]
 
-    try:
-        vim.command(f'keepalt edit {first.path}')
-    except vim.error as e:
-        # Check for ATTENTION (maybe opening a file that is already opened).
-        if e.args and e.args[0].find(':E325:') == -1:
-            raise
+    if _rel_path(vim.current.buffer.name) != first.path:
+        try:
+            vim.command(f'keepalt edit {first.path}')
+        except vim.error as e:
+            # Check for ATTENTION (maybe opening a file that is already opened).
+            if e.args and e.args[0].find(':E325:') == -1:
+                raise
 
     vim.command(f'{first.line}')
     vim.command(f'normal! {first.col}|')
@@ -140,7 +149,7 @@ def resolve_list():
     if not loc:
         return
 
-    _render_list(_run(_resolve_opts(loc)), loc)
+    _render_list(_run(_resolve_opts(loc), True), loc)
 
 
 def search(mode, args):
