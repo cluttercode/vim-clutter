@@ -42,7 +42,7 @@ def check():
     if len(ver) != 3:
         err("clutter gave out weird version output.")
 
-    if int(ver[0]) == 0 and int(ver[1]) < 2:
+    if ver[0].startswith('v') or (int(ver[0]) == 0 and int(ver[1]) < 2):
         err("incompatible clutter version - at least 0.2.0 required.")
 
 
