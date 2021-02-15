@@ -1,4 +1,4 @@
-*clutter-vim.doc* clutter vim bindings
+*cluttervim.txt* clutter vim bindings
 
                         _       _   _             ~
                     ___| |_   _| |_| |_ ___ _ __  ~
@@ -10,7 +10,7 @@
 ====================================================================
 CONTENTS                                           *ClutterContents*
 
-    1. Usage ................ |ClutterUsage|
+    1. Description........... |ClutterDescription|
     2. Mappings ............. |ClutterMappings|
     3. Commands ............. |ClutterCommands|
     4. License .............. |ClutterLicense|
@@ -18,31 +18,42 @@ CONTENTS                                           *ClutterContents*
     6. Contributing ......... |ClutterContributing|
 
 ====================================================================
-Section 1: Usage                                      *ClutterUsage*
+Section 1: Description                          *ClutterDescription*
 
-TODO
+Supplies clutter bindings (https://github.com/cluttercode/clutter).
+
+In short, :ClutterResolveList will open a location list of all
+matching tags for tag under cursor. :ClutterResolveNext and
+:ClutterResolvePrev will jump to next/prev match.
+
+:ClutterSearchExact/Glob/Regexp will perform a search (same as
+clutter search command does) and open the results in a location
+list.
 
 ====================================================================
 Section 2: Mappings                                *ClutterMappings*
 
-TODO
+<Leader>cl  for tag under cursor, show all matching tags
+            in a locationlist.
 
-map <Leader>cl :ClutterResolveList<CR>
-map <Leader>cp :ClutterResolvePrev<CR>
-map <Leader>cn :ClutterResolveNext<CR>
+<Leader>cp  jump to previous match for tag under cursor.
+
+<Leader>cn  jump to next match for tag under cursor.
 
 ====================================================================
 Section 3: Commands                                *ClutterCommands*
 
-TODO
+:ClutterResolveList
 
-command! -nargs=0 ClutterResolveList call ResolveList()
-command! -nargs=0 ClutterResolveNext call ResolveNext()
-command! -nargs=0 ClutterResolvePrev call ResolvePrev()
+:ClutterResolvePrev
 
-command! -nargs=* ClutterSearchExact call SearchExact(<f-args>)
-command! -nargs=* ClutterSearchGlob call SearchGlob(<f-args>)
-command! -nargs=* ClutterSearchRegexp call SearchRegexp(<f-args>)
+:ClutterResolveNext
+
+:ClutterSearchExact {filter}
+
+:ClutterSearchGlob {filter}
+
+:ClutterSearchRegexp {filter}
 
 ====================================================================
 Section 4: License                                  *ClutterLicense*
