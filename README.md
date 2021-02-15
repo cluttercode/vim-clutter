@@ -5,7 +5,7 @@
 ## Install
 
 ```
-Plug 'cluttercode/vimclutter', {'branch': 'main'}
+Plug 'cluttercode/vim-clutter', {'branch': 'main'}
 ```
 
 ## Docs
