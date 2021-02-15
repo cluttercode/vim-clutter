@@ -8,9 +8,6 @@ import subprocess
 
 import vim
 
-# [# test #]
-# [# test #]
-# [# test #]
 
 outpattern = re.compile('^(.*):([0-9]+)\.([0-9]+)-([0-9]+)$')
 
@@ -77,12 +74,11 @@ def _run(opts=[], buffer_stdin=False):
 
     stderr = proc.stderr.strip()
 
-    if proc.returncode != 0:
-        print(f'clutter: {stderr}')
-        return None
-
     if stderr:
         print(f'clutter: {stderr}')
+
+    if proc.returncode != 0:
+        return None
 
     stdout = proc.stdout
 
