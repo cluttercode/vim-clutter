@@ -37,13 +37,16 @@ def check():
     lines = proc.stdout.split(" ")
     if not lines:
         err("clutter gave out weird version output.")
+        return
 
     ver = lines[0].split(".")
     if len(ver) != 3:
         err("clutter gave out weird version output.")
+        return
 
     if ver[0].startswith('v') or (int(ver[0]) == 0 and int(ver[1]) < 2):
         err("incompatible clutter version - at least 0.2.0 required.")
+        return
 
 
 def _rel_path(path):
