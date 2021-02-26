@@ -10,4 +10,4 @@ Plug 'cluttercode/vim-clutter', {'branch': 'main'}
 
 ## Docs
 
-[Vim Doc](https://github.com/cluttercode/vim-clutter/blob/main/doc/clutter-vim.doc)
+[Vim Doc](https://github.com/cluttercode/vim-clutter/blob/main/doc/cluttervim.doc)
