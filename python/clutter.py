@@ -36,14 +36,15 @@ def check():
         err("clutter gave out weird version output.")
         return
 
-    ver = lines[0].split(".")
-    if len(ver) != 3:
-        err("clutter gave out weird version output.")
-        return
+    if lines[0] != 'dev':
+        ver = lines[0].split(".")
+        if len(ver) != 3:
+            err("clutter gave out weird version output.")
+            return
 
-    if ver[0].startswith('v') or (int(ver[0]) == 0 and int(ver[1]) < 2):
-        err("incompatible clutter version - at least 0.2.0 required.")
-        return
+        if ver[0].startswith('v') or (int(ver[0]) == 0 and int(ver[1]) < 2):
+            err("incompatible clutter version - at least 0.2.0 required.")
+            return
 
 
 def _rel_path(path):
